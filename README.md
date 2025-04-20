@@ -8,6 +8,8 @@
 ```
 RUCBase是由中国人民大学数据库教学团队开发，配套教育部“101计划”计算机核心教材《数据库管理系统原理与实现》建设的教学用数据库管理系统，旨在支撑面向本科数据库零基础学生的数据库系统课程实验教学。RUCBase系统框架部分参考和借鉴了CMU15-445课程的[BusTub](https://github.com/cmu-db/bustub) 和Standford CS346课程的[Redbase](https://web.stanford.edu/class/cs346/2015/redbase.html)，目前中国人民大学、哈尔滨工业大学、华中科技大学、西安电子科技大学等高校使用该教学系统进行数据库内核实验。
 
+本代码仓库是面向哈尔滨工业大学数据库系统课程教学需要定制的RucBase关系数据库管理系统内核实验代码框架。
+
 ## 实验环境：
 - 操作系统：Ubuntu 18.04 及以上(64位)
 - 编译器：GCC
@@ -40,24 +42,23 @@ RUCBase是由中国人民大学数据库教学团队开发，配套教育部“1
 - [Rucbase使用文档](docs/Rucbase使用文档.md)
 - [Rucbase项目结构](docs/Rucbase项目结构.pdf)
 - [框架图](docs/框架图.pdf)
+- [Rucbase学生实验操作说明示例](docs/Rucbase学生实验操作说明示例.md)
 
-### 学生实验文档(2022-10-26日更新)
+### 学生实验指导书
 
 > 请使用命令git pull来拉取最新的实验文档
 
-- [Rucbase学生实验操作说明示例](docs/Rucbase学生实验操作说明示例.md)
-- [Rucbase-Lab1存储管理实验文档](docs/Rucbase-Lab1[存储管理实验文档].md)
-- [Rucbase-Lab2索引管理实验文档](docs/Rucbase-Lab2[索引管理实验文档].md)
-- [Rucbase-Lab3查询执行实验文档](docs/Rucbase-Lab3[查询执行实验文档].md)
-- [Rucbase-Lab3查询执行实验指导](docs/Rucbase-Lab3[查询执行实验指导].md)
-- [Rucbase-Lab4并发控制实验文档](docs/Rucbase-Lab4[并发控制实验文档].md)
+- [Lab0-磁盘管理器实现](docs/hit-db-class/lab0.pdf)
+- [Lab1-缓冲池管理器实现](docs/hit-db-class/lab1.pdf)
+- [Lab2-记录管理器实现](docs/hit-db-class/lab2.pdf)
+- [Lab3-数据定义的实现](docs/hit-db-class/lab3.pdf)
+- [Lab4-数据操纵的实现](docs/hit-db-class/lab4.pdf)
 
 ### 时间安排和工作量估计
 
 | **实验**     | **发布时间**      | **截止时间**      | **工作量估计** | **难度系数** |
 | ------------ | ----------------- | ----------------- | -------------- | ------------ |
-| 实验环境配置 | - | - | 1~2h | 简单 |
-| 存储管理实验 | 10.22（第七周）    | 11.12（第十周）   | 15h            | 简单         |
-| 索引管理实验 | 11.5（第九周）   | 11.26（第十二周） | 35h            | 中等         |
-| 查询执行实验 | 11.26（第十二周） | 12.24（十六周） | 30-40h         | 困难         |
-| 并发控制实验 | 12.17（第十五周） | 暂定1.7（第十八周） | 25-30h         | 中等         |
+| Lab1 | 第9周 | 第10周 | 10h            |          |
+| Lab2 | 第11周 | 第12周 | 10h            |          |
+| Lab3 | 第13周 | 第14周 | 8h         |          |
+| Lab4 | 第15周 | 第16周 | 10h         |          |
