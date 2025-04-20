@@ -79,5 +79,5 @@ class BufferPoolManager {
    private:
     bool find_victim_page(frame_id_t* frame_id);
 
-    void update_page(Page* page, PageId new_page_id, frame_id_t new_frame_id);
+    // void update_page(Page* page, PageId new_page_id, frame_id_t new_frame_id);
 };

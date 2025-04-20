@@ -30,13 +30,13 @@ bool BufferPoolManager::find_victim_page(frame_id_t* frame_id) {
  * @param {PageId} new_page_id 新的page_id
  * @param {frame_id_t} new_frame_id 新的帧frame_id
  */
-void BufferPoolManager::update_page(Page *page, PageId new_page_id, frame_id_t new_frame_id) {
+// void BufferPoolManager::update_page(Page *page, PageId new_page_id, frame_id_t new_frame_id) {
     // Todo:
     // 1 如果是脏页，写回磁盘，并且把dirty置为false
     // 2 更新page table
     // 3 重置page的data，更新page id
 
-}
+// }
 
 /**
  * @description: 从buffer pool获取需要的页。
