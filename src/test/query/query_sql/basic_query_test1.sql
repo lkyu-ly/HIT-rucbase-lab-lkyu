@@ -7,8 +7,9 @@ show tables;
 create table grade (id int);
 drop table t;
 show tables;
-create index grade(id);
-create index grade(student_id);
-create index student(id);
+-- 删除下面3条语句的原因是跳过了索引实验
+-- create index grade(id);
+-- create index grade(student_id);
+-- create index student(id);
 
 drop table grade;
