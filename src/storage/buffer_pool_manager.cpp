@@ -50,7 +50,7 @@ Page* BufferPoolManager::fetch_page(PageId page_id) {
     // 1.     从page_table_中搜寻目标页
     // 1.1    若目标页有被page_table_记录，则将其所在frame固定(pin)，并返回目标页。
     // 1.2    否则，尝试调用find_victim_page获得一个可用的frame，若失败则返回nullptr
-    // 2.     若获得的可用frame存储的为dirty page，则须调用updata_page将page写回到磁盘
+    // 2.     若获得的可用frame存储的为dirty page，则须调用write_page将page写回到磁盘
     // 3.     调用disk_manager_的read_page读取目标页到frame
     // 4.     固定目标页，更新pin_count_
     // 5.     返回目标页
