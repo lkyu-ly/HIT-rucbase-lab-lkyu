@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Renmin University of China
 RMDB is licensed under Mulan PSL v2.
-You can use this software according to the terms and conditions of the Mulan PSL v2.
-You may obtain a copy of Mulan PSL v2 at:
+You can use this software according to the terms and conditions of the Mulan PSL
+v2. You may obtain a copy of Mulan PSL v2 at:
         http://license.coscl.org.cn/MulanPSL2
 THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
@@ -26,12 +26,13 @@ class SeqScanExecutor : public AbstractExecutor {
     std::vector<Condition> fed_conds_;  // 同conds_，两个字段相同
 
     Rid rid_;
-    std::unique_ptr<RecScan> scan_;     // table_iterator
+    std::unique_ptr<RecScan> scan_;  // table_iterator
 
     SmManager *sm_manager_;
 
    public:
-    SeqScanExecutor(SmManager *sm_manager, std::string tab_name, std::vector<Condition> conds, Context *context) {
+    SeqScanExecutor(SmManager *sm_manager, std::string tab_name,
+                    std::vector<Condition> conds, Context *context) {
         sm_manager_ = sm_manager;
         tab_name_ = std::move(tab_name);
         conds_ = std::move(conds);
@@ -46,48 +47,47 @@ class SeqScanExecutor : public AbstractExecutor {
     }
 
     /**
-     * @brief 构建表迭代器scan_,并开始迭代扫描,直到扫描到第一个满足谓词条件的元组停止,并赋值给rid_
+     * @brief
+     * 构建表迭代器scan_,并开始迭代扫描,直到扫描到第一个满足谓词条件的元组停止,并赋值给rid_
      *
      */
-    void beginTuple() override {
-        
-    }
+    void beginTuple() override {}
 
     /**
-     * @brief 从当前scan_指向的记录开始迭代扫描,直到扫描到第一个满足谓词条件的元组停止,并赋值给rid_
+     * @brief
+     * 从当前scan_指向的记录开始迭代扫描,直到扫描到第一个满足谓词条件的元组停止,并赋值给rid_
      *
      */
-    void nextTuple() override {
-        
-    }
+    void nextTuple() override {}
 
     /**
      * @brief 返回下一个满足扫描条件的记录
      *
      * @return std::unique_ptr<RmRecord>
      */
-    std::unique_ptr<RmRecord> Next() override {
-        return nullptr;
-    }
+    std::unique_ptr<RmRecord> Next() override { return nullptr; }
 
     Rid &rid() override { return rid_; }
 
     bool is_end() const override { return true; }
-    
+
     std::string getType() override { return "SeqScanExecutor"; }
 
     size_t tupleLen() const override { return len_; }
 
     const std::vector<ColMeta> &cols() const override { return cols_; }
 
-    private:
-    bool eval_cond(const RmRecord *rec, const Condition &cond, const std::vector<ColMeta> &rec_cols) {
+   private:
+    bool eval_cond(const RmRecord *rec, const Condition &cond,
+                   const std::vector<ColMeta> &rec_cols) {
         return true;
     }
 
-    bool eval_conds(const RmRecord *rec, const std::vector<Condition> &conds, const std::vector<ColMeta> &rec_cols) {
+    bool eval_conds(const RmRecord *rec, const std::vector<Condition> &conds,
+                    const std::vector<ColMeta> &rec_cols) {
         return std::all_of(conds.begin(), conds.end(),
-            [&](const Condition &cond) { return eval_cond(rec, cond, rec_cols); }
-        );
+                           [&](const Condition &cond) {
+                               return eval_cond(rec, cond, rec_cols);
+                           });
     }
 };

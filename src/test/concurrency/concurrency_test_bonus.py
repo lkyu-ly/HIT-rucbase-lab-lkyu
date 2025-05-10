@@ -1,5 +1,5 @@
-import os;
-import time;
+import os
+import time
 
 NUM_TESTS = 10
 

@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Renmin University of China
 RMDB is licensed under Mulan PSL v2.
-You can use this software according to the terms and conditions of the Mulan PSL v2.
-You may obtain a copy of Mulan PSL v2 at:
+You can use this software according to the terms and conditions of the Mulan PSL
+v2. You may obtain a copy of Mulan PSL v2 at:
         http://license.coscl.org.cn/MulanPSL2
 THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
@@ -25,9 +25,11 @@ int main() {
         "drop index tb(b);",
         "insert into tb values (1, 3.14, 'pi');",
         "delete from tb where a = 1;",
-        "update tb set a = 1, b = 2.2, c = 'xyz' where x = 2 and y < 1.1 and z > 'abc';",
+        "update tb set a = 1, b = 2.2, c = 'xyz' where x = 2 and y < 1.1 and z "
+        "> 'abc';",
         "select * from tb;",
-        "select * from tb where x <> 2 and y >= 3. and z <= '123' and b < tb.a;",
+        "select * from tb where x <> 2 and y >= 3. and z <= '123' and b < "
+        "tb.a;",
         "select x.a, y.b from x, y where x.a = y.b and c = d;",
         "select x.a, y.b from x join y where x.a = y.b and c = d;",
         "exit;",

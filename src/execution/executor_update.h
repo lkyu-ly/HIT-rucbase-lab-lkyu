@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Renmin University of China
 RMDB is licensed under Mulan PSL v2.
-You can use this software according to the terms and conditions of the Mulan PSL v2.
-You may obtain a copy of Mulan PSL v2 at:
+You can use this software according to the terms and conditions of the Mulan PSL
+v2. You may obtain a copy of Mulan PSL v2 at:
         http://license.coscl.org.cn/MulanPSL2
 THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
@@ -26,8 +26,10 @@ class UpdateExecutor : public AbstractExecutor {
     SmManager *sm_manager_;
 
    public:
-    UpdateExecutor(SmManager *sm_manager, const std::string &tab_name, std::vector<SetClause> set_clauses,
-                   std::vector<Condition> conds, std::vector<Rid> rids, Context *context) {
+    UpdateExecutor(SmManager *sm_manager, const std::string &tab_name,
+                   std::vector<SetClause> set_clauses,
+                   std::vector<Condition> conds, std::vector<Rid> rids,
+                   Context *context) {
         sm_manager_ = sm_manager;
         tab_name_ = tab_name;
         set_clauses_ = set_clauses;
@@ -37,10 +39,7 @@ class UpdateExecutor : public AbstractExecutor {
         rids_ = rids;
         context_ = context;
     }
-    std::unique_ptr<RmRecord> Next() override {
-        
-        return nullptr;
-    }
+    std::unique_ptr<RmRecord> Next() override { return nullptr; }
 
     Rid &rid() override { return _abstract_rid; }
 };

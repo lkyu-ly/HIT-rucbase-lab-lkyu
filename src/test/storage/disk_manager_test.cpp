@@ -9,7 +9,8 @@
 
 constexpr int MAX_FILES = 32;
 constexpr int MAX_PAGES = 128;
-const std::string TEST_DB_NAME = "DiskManagerTest_db";  // 以TEST_DB_NAME作为存放测试文件的根目录名
+const std::string TEST_DB_NAME =
+    "DiskManagerTest_db";  // 以TEST_DB_NAME作为存放测试文件的根目录名
 
 // Add by jiawen
 class DiskManagerTest : public ::testing::Test {
@@ -76,7 +77,8 @@ TEST_F(DiskManagerTest, FileOperation) {
         }
         // 创建文件
         disk_manager_->create_file(filename);
-        EXPECT_EQ(disk_manager_->is_file(filename), true);  // 检查是否创建文件成功
+        EXPECT_EQ(disk_manager_->is_file(filename),
+                  true);  // 检查是否创建文件成功
         try {
             disk_manager_->create_file(filename);
             assert(false);
@@ -100,7 +102,8 @@ TEST_F(DiskManagerTest, FileOperation) {
         auto &filename = entry.second;
         disk_manager_->close_file(fd);
         disk_manager_->destroy_file(filename);
-        EXPECT_EQ(disk_manager_->is_file(filename), false);  // 检查是否删除文件成功
+        EXPECT_EQ(disk_manager_->is_file(filename),
+                  false);  // 检查是否删除文件成功
         try {
             disk_manager_->destroy_file(filename);
             assert(false);
@@ -132,14 +135,20 @@ TEST_F(DiskManagerTest, PageOperation) {
     char data[PAGE_SIZE] = {0};
     for (int page_no = 0; page_no < MAX_PAGES; page_no++) {
         // 分配页面编号
-        int ret_page_no = disk_manager_->allocate_page(fd);  // 注意此处返回值是分配编号之前的值
+        int ret_page_no = disk_manager_->allocate_page(
+            fd);  // 注意此处返回值是分配编号之前的值
         EXPECT_EQ(ret_page_no, page_no);
         // 读写页面
-        rand_buf(data, PAGE_SIZE);                                // generate data
-        disk_manager_->write_page(fd, page_no, data, PAGE_SIZE);  // write data to disk (data -> disk page)
-        std::memset(buf, 0, sizeof(buf));                         // clear buf
-        disk_manager_->read_page(fd, page_no, buf, PAGE_SIZE);    // read buf from disk (disk page -> buf)
-        EXPECT_EQ(std::memcmp(buf, data, sizeof(buf)), 0);        // check if buf == data
+        rand_buf(data, PAGE_SIZE);  // generate data
+        disk_manager_->write_page(
+            fd, page_no, data,
+            PAGE_SIZE);  // write data to disk (data -> disk page)
+        std::memset(buf, 0, sizeof(buf));  // clear buf
+        disk_manager_->read_page(
+            fd, page_no, buf,
+            PAGE_SIZE);  // read buf from disk (disk page -> buf)
+        EXPECT_EQ(std::memcmp(buf, data, sizeof(buf)),
+                  0);  // check if buf == data
     }
 
     // 关闭&删除文件

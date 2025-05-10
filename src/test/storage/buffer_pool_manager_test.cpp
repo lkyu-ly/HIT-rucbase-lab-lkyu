@@ -13,7 +13,8 @@
 constexpr int MAX_FILES = 32;
 constexpr int MAX_PAGES = 128;
 constexpr size_t TEST_BUFFER_POOL_SIZE = MAX_FILES * MAX_PAGES;
-const std::string TEST_DB_NAME = "BufferPoolManagerTest_db";  // 以TEST_DB_NAME作为存放测试文件的根目录名
+const std::string TEST_DB_NAME =
+    "BufferPoolManagerTest_db";  // 以TEST_DB_NAME作为存放测试文件的根目录名
 
 // Add by jiawen
 class BufferPoolManagerTest : public ::testing::Test {
@@ -84,7 +85,8 @@ TEST_F(BufferPoolManagerTest, SimpleTest) {
     // create BufferPoolManager
     const size_t buffer_pool_size = 10;
     auto disk_manager = BufferPoolManagerTest::disk_manager_.get();
-    auto bpm = std::make_unique<BufferPoolManager>(buffer_pool_size, disk_manager);
+    auto bpm =
+        std::make_unique<BufferPoolManager>(buffer_pool_size, disk_manager);
     // create and open file
     disk_manager_->create_file(filename);
     int fd = disk_manager_->open_file(filename);
@@ -92,26 +94,30 @@ TEST_F(BufferPoolManagerTest, SimpleTest) {
     PageId tmp_page_id = {.fd = fd, .page_no = INVALID_PAGE_ID};
     auto *page0 = bpm->new_page(&tmp_page_id);
 
-    // Scenario: The buffer pool is empty. We should be able to create a new page.
+    // Scenario: The buffer pool is empty. We should be able to create a new
+    // page.
     ASSERT_NE(nullptr, page0);
     EXPECT_EQ(0, tmp_page_id.page_no);
 
-    // Scenario: Once we have a page, we should be able to read and write content.
+    // Scenario: Once we have a page, we should be able to read and write
+    // content.
     snprintf(page0->get_data(), sizeof(page0->get_data()), "Hello");
     EXPECT_EQ(0, strcmp(page0->get_data(), "Hello"));
 
-    // Scenario: We should be able to create new pages until we fill up the buffer pool.
+    // Scenario: We should be able to create new pages until we fill up the
+    // buffer pool.
     for (size_t i = 1; i < buffer_pool_size; ++i) {
         EXPECT_NE(nullptr, bpm->new_page(&tmp_page_id));
     }
 
-    // Scenario: Once the buffer pool is full, we should not be able to create any new pages.
+    // Scenario: Once the buffer pool is full, we should not be able to create
+    // any new pages.
     for (size_t i = buffer_pool_size; i < buffer_pool_size * 2; ++i) {
         EXPECT_EQ(nullptr, bpm->new_page(&tmp_page_id));
     }
 
-    // Scenario: After unpinning pages {0, 1, 2, 3, 4} and pinning another 4 new pages,
-    // there would still be one cache frame left for reading page 0.
+    // Scenario: After unpinning pages {0, 1, 2, 3, 4} and pinning another 4 new
+    // pages, there would still be one cache frame left for reading page 0.
     for (int i = 0; i < 5; ++i) {
         EXPECT_EQ(true, bpm->unpin_page(PageId{fd, i}, true));
     }
@@ -123,7 +129,8 @@ TEST_F(BufferPoolManagerTest, SimpleTest) {
     page0 = bpm->fetch_page(PageId{fd, 0});
     EXPECT_EQ(0, strcmp(page0->get_data(), "Hello"));
     EXPECT_EQ(true, bpm->unpin_page(PageId{fd, 0}, true));
-    // new_page again, and now all buffers are pinned. Page 0 would be failed to fetch.
+    // new_page again, and now all buffers are pinned. Page 0 would be failed to
+    // fetch.
     EXPECT_NE(nullptr, bpm->new_page(&tmp_page_id));
     EXPECT_EQ(nullptr, bpm->fetch_page(PageId{fd, 0}));
 
@@ -142,7 +149,8 @@ TEST_F(BufferPoolManagerTest, LargeScaleTest) {
     // create BufferPoolManager
     const int buffer_pool_size = 10;
     auto disk_manager = BufferPoolManagerTest::disk_manager_.get();
-    auto bpm = std::make_unique<BufferPoolManager>(static_cast<size_t>(buffer_pool_size), disk_manager);
+    auto bpm = std::make_unique<BufferPoolManager>(
+        static_cast<size_t>(buffer_pool_size), disk_manager);
     // create and open file
     disk_manager_->create_file(filename);
     int fd = disk_manager_->open_file(filename);
@@ -154,10 +162,12 @@ TEST_F(BufferPoolManagerTest, LargeScaleTest) {
         for (int j = 0; j < buffer_pool_size; j++) {
             auto new_page = bpm->new_page(&tmp_page_id);
             EXPECT_NE(nullptr, new_page);
-            strcpy(new_page->get_data(), std::to_string(tmp_page_id.page_no).c_str());
+            strcpy(new_page->get_data(),
+                   std::to_string(tmp_page_id.page_no).c_str());
             page_ids.push_back(tmp_page_id);
         }
-        for (unsigned int j = page_ids.size() - buffer_pool_size; j < page_ids.size(); j++) {
+        for (unsigned int j = page_ids.size() - buffer_pool_size;
+             j < page_ids.size(); j++) {
             EXPECT_EQ(true, bpm->unpin_page(page_ids[j], true));
         }
     }
@@ -165,7 +175,8 @@ TEST_F(BufferPoolManagerTest, LargeScaleTest) {
     for (int i = 0; i < scale; i++) {
         auto page = bpm->fetch_page(page_ids[i]);
         EXPECT_NE(nullptr, page);
-        EXPECT_EQ(0, std::strcmp(std::to_string(page_ids[i].page_no).c_str(), page->get_data()));
+        EXPECT_EQ(0, std::strcmp(std::to_string(page_ids[i].page_no).c_str(),
+                                 page->get_data()));
         EXPECT_EQ(true, bpm->unpin_page(page_ids[i], true));
         page_ids.push_back(tmp_page_id);
     }
@@ -184,7 +195,8 @@ TEST_F(BufferPoolManagerTest, LargeScaleTest) {
  */
 TEST_F(BufferPoolManagerTest, MultipleFilesTest) {
     const size_t buffer_size = MAX_FILES * MAX_PAGES / 2;
-    auto buffer_pool_manager = std::make_unique<BufferPoolManager>(buffer_size, disk_manager_.get());
+    auto buffer_pool_manager =
+        std::make_unique<BufferPoolManager>(buffer_size, disk_manager_.get());
 
     // mock记录生成文件的(文件fd, page在内存中的首地址)
     // page在内存中的首地址是page在内存中的备份
@@ -202,10 +214,14 @@ TEST_F(BufferPoolManagerTest, MultipleFilesTest) {
         disk_manager_->create_file(filename);
         int fd = disk_manager_->open_file(filename);
 
-        mock[fd] = new char[PAGE_SIZE * MAX_PAGES];  // 申请PAGE_SIZE * MAX_PAGES个字节的内存空间，mock[fd]记录其首地址
+        mock[fd] = new char
+            [PAGE_SIZE *
+             MAX_PAGES];  // 申请PAGE_SIZE *
+                          // MAX_PAGES个字节的内存空间，mock[fd]记录其首地址
         fd2name[fd] = filename;
 
-        disk_manager_->set_fd2pageno(fd, 0);  // 设置diskmanager在fd对应的文件中从0开始分配page_no
+        disk_manager_->set_fd2pageno(
+            fd, 0);  // 设置diskmanager在fd对应的文件中从0开始分配page_no
     }
 
     char buf[PAGE_SIZE] = {0};
@@ -214,21 +230,26 @@ TEST_F(BufferPoolManagerTest, MultipleFilesTest) {
     for (auto &fh : mock) {
         int fd = fh.first;
         for (page_id_t i = 0; i < MAX_PAGES; i++) {
-            rand_buf(buf, PAGE_SIZE);  // 生成buf，将buf填充PAGE_SIZE个字节的随机数据
+            rand_buf(buf,
+                     PAGE_SIZE);  // 生成buf，将buf填充PAGE_SIZE个字节的随机数据
 
             PageId tmp_page_id = {.fd = fd, .page_no = INVALID_PAGE_ID};
-            Page *page = buffer_pool_manager->new_page(&tmp_page_id);  // pin the page
+            Page *page =
+                buffer_pool_manager->new_page(&tmp_page_id);  // pin the page
             int page_no = tmp_page_id.page_no;
             EXPECT_EQ(page_no, i);
 
-            memcpy(page->get_data(), buf, PAGE_SIZE);          // buf -> page
-            char *mock_buf = &mock[fd][page_no * PAGE_SIZE];  // get mock address in (fd,page_no)
-            memcpy(mock_buf, buf, PAGE_SIZE);                 // buf -> mock
+            memcpy(page->get_data(), buf, PAGE_SIZE);  // buf -> page
+            char *mock_buf =
+                &mock[fd]
+                     [page_no * PAGE_SIZE];  // get mock address in (fd,page_no)
+            memcpy(mock_buf, buf, PAGE_SIZE);  // buf -> mock
 
             // check cache: page data == mock data
             EXPECT_EQ(memcmp(page->get_data(), mock_buf, PAGE_SIZE), 0);
 
-            bool unpin_flag = buffer_pool_manager->unpin_page(page->get_page_id(), true);  // unpin the page
+            bool unpin_flag = buffer_pool_manager->unpin_page(
+                page->get_page_id(), true);  // unpin the page
             EXPECT_EQ(unpin_flag, true);
         }
     }
@@ -237,16 +258,22 @@ TEST_F(BufferPoolManagerTest, MultipleFilesTest) {
     // Flush and test disk
     for (auto &entry : fd2name) {
         int fd = entry.first;
-        buffer_pool_manager->flush_all_pages(fd);  // wirte all pages in fd file into disk
+        buffer_pool_manager->flush_all_pages(
+            fd);  // wirte all pages in fd file into disk
         for (int page_no = 0; page_no < MAX_PAGES; page_no++) {
             // check disk: disk data == mock data
-            disk_manager_->read_page(fd, page_no, buf, PAGE_SIZE);  // read page from disk (disk -> buf)
-            char *mock_buf = &mock[fd][page_no * PAGE_SIZE];        // get mock address in (fd,page_no)
+            disk_manager_->read_page(
+                fd, page_no, buf,
+                PAGE_SIZE);  // read page from disk (disk -> buf)
+            char *mock_buf =
+                &mock[fd]
+                     [page_no * PAGE_SIZE];  // get mock address in (fd,page_no)
             EXPECT_EQ(memcmp(buf, mock_buf, PAGE_SIZE), 0);
             // check disk: disk data == page data
             Page *page = buffer_pool_manager->fetch_page(PageId{fd, page_no});
             EXPECT_EQ(memcmp(buf, page->get_data(), PAGE_SIZE), 0);
-            bool unpin_flag = buffer_pool_manager->unpin_page(page->get_page_id(), false);
+            bool unpin_flag =
+                buffer_pool_manager->unpin_page(page->get_page_id(), false);
             EXPECT_EQ(unpin_flag, true);
         }
     }
@@ -268,14 +295,19 @@ TEST_F(BufferPoolManagerTest, MultipleFilesTest) {
         if (rand() % 10 == 0) {
             buffer_pool_manager->flush_page(page->get_page_id());
             // check disk: disk data == mock data
-            disk_manager_->read_page(fd, page_no, buf, PAGE_SIZE);  // read page from disk (disk -> buf)
-            char *mock_buf = &mock[fd][page_no * PAGE_SIZE];        // get mock address in (fd,page_no)
+            disk_manager_->read_page(
+                fd, page_no, buf,
+                PAGE_SIZE);  // read page from disk (disk -> buf)
+            char *mock_buf =
+                &mock[fd]
+                     [page_no * PAGE_SIZE];  // get mock address in (fd,page_no)
             EXPECT_EQ(memcmp(buf, mock_buf, PAGE_SIZE), 0);
         }
         // check cache: page data == mock data
         EXPECT_EQ(memcmp(page->get_data(), mock_buf, PAGE_SIZE), 0);
 
-        bool unpin_flag = buffer_pool_manager->unpin_page(page->get_page_id(), true);  // unpin the page
+        bool unpin_flag = buffer_pool_manager->unpin_page(
+            page->get_page_id(), true);  // unpin the page
         EXPECT_EQ(unpin_flag, true);
     }
 
@@ -308,15 +340,16 @@ TEST_F(BufferPoolManagerTest, ConcurrencyTest) {
 
     for (int run = 0; run < num_runs; run++) {
         // create BufferPoolManager
-        std::shared_ptr<BufferPoolManager> bpm{
-            new BufferPoolManager(static_cast<size_t>(buffer_pool_size), disk_manager)};
+        std::shared_ptr<BufferPoolManager> bpm{new BufferPoolManager(
+            static_cast<size_t>(buffer_pool_size), disk_manager)};
 
         PageId tmp_page_id = {.fd = fd, .page_no = INVALID_PAGE_ID};
         std::vector<PageId> page_ids;
         for (int i = 0; i < buffer_pool_size; i++) {
             auto *new_page = bpm->new_page(&tmp_page_id);
             EXPECT_NE(nullptr, new_page);
-            strcpy(new_page->get_data(), std::to_string(tmp_page_id.page_no).c_str());
+            strcpy(new_page->get_data(),
+                   std::to_string(tmp_page_id.page_no).c_str());
             page_ids.push_back(tmp_page_id);
         }
 
@@ -337,7 +370,9 @@ TEST_F(BufferPoolManagerTest, ConcurrencyTest) {
         for (int j = 0; j < buffer_pool_size; j++) {
             auto *page = bpm->fetch_page(page_ids[j]);
             EXPECT_NE(nullptr, page);
-            strcpy(page->get_data(), (std::string("Hard") + std::to_string(page_ids[j].page_no)).c_str());
+            strcpy(page->get_data(),
+                   (std::string("Hard") + std::to_string(page_ids[j].page_no))
+                       .c_str());
         }
 
         for (int i = 0; i < buffer_pool_size; i++) {
@@ -366,11 +401,13 @@ TEST_F(BufferPoolManagerTest, ConcurrencyTest) {
                             page_local = bpm->fetch_page(temp_page_id);
                         }
                         EXPECT_NE(nullptr, page_local);
-                        EXPECT_EQ(0,
-                                  std::strcmp(std::to_string(temp_page_id.page_no).c_str(), (page_local->get_data())));
+                        EXPECT_EQ(
+                            0, std::strcmp(
+                                   std::to_string(temp_page_id.page_no).c_str(),
+                                   (page_local->get_data())));
                         EXPECT_EQ(true, bpm->unpin_page(temp_page_id, false));
-                        // If the page is still in buffer pool then put it in free list,
-                        // else also we are happy
+                        // If the page is still in buffer pool then put it in
+                        // free list, else also we are happy
                         EXPECT_EQ(true, bpm->delete_page(temp_page_id));
                     }
 
@@ -380,11 +417,17 @@ TEST_F(BufferPoolManagerTest, ConcurrencyTest) {
                     }
                     EXPECT_NE(nullptr, page);
                     if (j % 2 == 0) {
-                        EXPECT_EQ(0, std::strcmp(std::to_string(page_ids[j].page_no).c_str(), (page->get_data())));
+                        EXPECT_EQ(
+                            0, std::strcmp(
+                                   std::to_string(page_ids[j].page_no).c_str(),
+                                   (page->get_data())));
                         EXPECT_EQ(true, bpm->unpin_page(page_ids[j], false));
                     } else {
-                        EXPECT_EQ(0, std::strcmp((std::string("Hard") + std::to_string(page_ids[j].page_no)).c_str(),
-                                                 (page->get_data())));
+                        EXPECT_EQ(
+                            0, std::strcmp((std::string("Hard") +
+                                            std::to_string(page_ids[j].page_no))
+                                               .c_str(),
+                                           (page->get_data())));
                         EXPECT_EQ(true, bpm->unpin_page(page_ids[j], false));
                     }
                     j = (j + 1);
@@ -394,22 +437,24 @@ TEST_F(BufferPoolManagerTest, ConcurrencyTest) {
                         page = bpm->new_page(&temp_page_id);
                     }
                     EXPECT_NE(nullptr, page);
-                    strcpy(page->get_data(), std::to_string(temp_page_id.page_no).c_str());
+                    strcpy(page->get_data(),
+                           std::to_string(temp_page_id.page_no).c_str());
                     // FLush page instead of unpining with true
                     EXPECT_EQ(true, bpm->flush_page(temp_page_id));
                     EXPECT_EQ(true, bpm->unpin_page(temp_page_id, false));
 
                     // Flood with new pages
                     for (int k = 0; k < 10; k++) {
-                        PageId flood_page_id = {.fd = fd, .page_no = INVALID_PAGE_ID};
+                        PageId flood_page_id = {.fd = fd,
+                                                .page_no = INVALID_PAGE_ID};
                         auto *flood_page = bpm->new_page(&flood_page_id);
                         while (flood_page == nullptr) {
                             flood_page = bpm->new_page(&flood_page_id);
                         }
                         EXPECT_NE(nullptr, flood_page);
                         EXPECT_EQ(true, bpm->unpin_page(flood_page_id, false));
-                        // If the page is still in buffer pool then put it in free list,
-                        // else also we are happy
+                        // If the page is still in buffer pool then put it in
+                        // free list, else also we are happy
                         EXPECT_EQ(true, bpm->delete_page(flood_page_id));
                     }
                 }

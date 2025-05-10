@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Renmin University of China
 RMDB is licensed under Mulan PSL v2.
-You can use this software according to the terms and conditions of the Mulan PSL v2.
-You may obtain a copy of Mulan PSL v2 at:
+You can use this software according to the terms and conditions of the Mulan PSL
+v2. You may obtain a copy of Mulan PSL v2 at:
         http://license.coscl.org.cn/MulanPSL2
 THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
@@ -25,10 +25,14 @@ class Bitmap {
     static void set(char *bm, int pos) { bm[get_bucket(pos)] |= get_bit(pos); }
 
     // pos位 置0
-    static void reset(char *bm, int pos) { bm[get_bucket(pos)] &= static_cast<char>(~get_bit(pos)); }
+    static void reset(char *bm, int pos) {
+        bm[get_bucket(pos)] &= static_cast<char>(~get_bit(pos));
+    }
 
     // 如果pos位是1，则返回true
-    static bool is_set(const char *bm, int pos) { return (bm[get_bucket(pos)] & get_bit(pos)) != 0; }
+    static bool is_set(const char *bm, int pos) {
+        return (bm[get_bucket(pos)] & get_bit(pos)) != 0;
+    }
 
     /**
      * @brief 找下一个为0 or 1的位
@@ -48,14 +52,20 @@ class Bitmap {
     }
 
     // 找第一个为0 or 1的位
-    static int first_bit(bool bit, const char *bm, int max_n) { return next_bit(bit, bm, max_n, -1); }
+    static int first_bit(bool bit, const char *bm, int max_n) {
+        return next_bit(bit, bm, max_n, -1);
+    }
 
     // for example:
-    // rid_.slot_no = Bitmap::next_bit(true, page_handle.bitmap, file_handle_->file_hdr_.num_records_per_page,
-    // rid_.slot_no); int slot_no = Bitmap::first_bit(false, page_handle.bitmap, file_hdr_.num_records_per_page);
+    // rid_.slot_no = Bitmap::next_bit(true, page_handle.bitmap,
+    // file_handle_->file_hdr_.num_records_per_page, rid_.slot_no); int slot_no
+    // = Bitmap::first_bit(false, page_handle.bitmap,
+    // file_hdr_.num_records_per_page);
 
    private:
     static int get_bucket(int pos) { return pos / BITMAP_WIDTH; }
 
-    static char get_bit(int pos) { return BITMAP_HIGHEST_BIT >> static_cast<char>(pos % BITMAP_WIDTH); }
+    static char get_bit(int pos) {
+        return BITMAP_HIGHEST_BIT >> static_cast<char>(pos % BITMAP_WIDTH);
+    }
 };

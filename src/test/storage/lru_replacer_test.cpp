@@ -37,12 +37,14 @@ TEST(LRUReplacerTest, SimpleTest) {
     EXPECT_EQ(3, value);
 
     // Scenario: pin elements in the replacer.
-    // Note that 3 has already been victimized, so pinning 3 should have no effect.
+    // Note that 3 has already been victimized, so pinning 3 should have no
+    // effect.
     lru_replacer.pin(3);
     lru_replacer.pin(4);
     EXPECT_EQ(2, lru_replacer.Size());
 
-    // Scenario: unpin 4. We expect that the reference bit of 4 will be set to 1.
+    // Scenario: unpin 4. We expect that the reference bit of 4 will be set
+    // to 1.
     lru_replacer.unpin(4);
 
     // Scenario: continue looking for victims. We expect these victims.

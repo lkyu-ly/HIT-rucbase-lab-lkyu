@@ -1,33 +1,32 @@
-#include <string>
-#include <vector>
 #include <fstream>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 class Operation {
-public:
-    std::string name;   // 比如t1a, t1b, t2a
-    std::string sql;    
+   public:
+    std::string name;  // 比如t1a, t1b, t2a
+    std::string sql;
     int txn_id;
 };
 
 class OperationPermutation {
-public:
+   public:
     std::vector<Operation*> operations;
 };
 
 class Transaction {
-public:
+   public:
     std::vector<Operation*> operations;
     int txn_id;
     int sockfd;
 };
 
 class TestCaseAnalyzer {
-public:
-    TestCaseAnalyzer() {
-        permutation = new OperationPermutation();
-    }
-    void analyze_operation(Operation* operation, const std::string& operation_line);
+   public:
+    TestCaseAnalyzer() { permutation = new OperationPermutation(); }
+    void analyze_operation(Operation* operation,
+                           const std::string& operation_line);
     void analyze_test_case();
 
     OperationPermutation* permutation;
@@ -37,4 +36,3 @@ public:
     std::fstream infile;
     std::unordered_map<std::string, Operation*> operation_map;
 };
-

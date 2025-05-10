@@ -2,8 +2,8 @@
 
 #include "regress_test.h"
 
-int main(int argc, char** argv) {
-    if(argc < 2) {
+int main(int argc, char **argv) {
+    if (argc < 2) {
         fprintf(stderr, "Test_case needed.\n");
         exit(1);
     }
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
                 break;
         }
     }
-    
+
     int sockfd = connect_database(unix_socket_path, server_host, server_port);
     start_test(sockfd, infile);
     disconnect(sockfd);
