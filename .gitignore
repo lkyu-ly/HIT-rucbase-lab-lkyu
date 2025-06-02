@@ -31,3 +31,4 @@ __pycache__/
 
 deps/
 /bin
+/test
