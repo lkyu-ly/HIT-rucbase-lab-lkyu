@@ -34,8 +34,8 @@ def build():
     os.mkdir("./build")
     os.chdir("./build")
     os.system("cmake ..")
-    os.system("make rmdb -j4")
-    os.system("make query_test -j4")
+    os.system("make rmdb -j12")
+    os.system("make query_test -j12")
     os.chdir("..")
 
 

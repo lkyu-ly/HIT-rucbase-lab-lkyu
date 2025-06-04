@@ -17,7 +17,9 @@
 #define MAX_MEM_BUFFER_SIZE 8192
 #define PORT_DEFAULT 8765
 
-bool is_exit_command(std::string &cmd) { return cmd == "exit" || cmd == "exit;" || cmd == "bye" || cmd == "bye;"; }
+bool is_exit_command(std::string &cmd) {
+    return cmd == "exit" || cmd == "exit;" || cmd == "bye" || cmd == "bye;";
+}
 
 int init_unix_sock(const char *unix_sock_path) {
     int sockfd = socket(PF_UNIX, SOCK_STREAM, 0);
@@ -29,11 +31,13 @@ int init_unix_sock(const char *unix_sock_path) {
     struct sockaddr_un sockaddr;
     memset(&sockaddr, 0, sizeof(sockaddr));
     sockaddr.sun_family = PF_UNIX;
-    snprintf(sockaddr.sun_path, sizeof(sockaddr.sun_path), "%s", unix_sock_path);
+    snprintf(sockaddr.sun_path, sizeof(sockaddr.sun_path), "%s",
+             unix_sock_path);
 
     if (connect(sockfd, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) < 0) {
-        fprintf(stderr, "failed to connect to server. unix socket path '%s'. error %s", sockaddr.sun_path,
-                strerror(errno));
+        fprintf(stderr,
+                "failed to connect to server. unix socket path '%s'. error %s",
+                sockaddr.sun_path, strerror(errno));
         close(sockfd);
         return -1;
     }
@@ -45,13 +49,15 @@ int init_tcp_sock(const char *server_host, int server_port) {
     struct sockaddr_in serv_addr;
 
     if ((host = gethostbyname(server_host)) == NULL) {
-        fprintf(stderr, "gethostbyname failed. errmsg=%d:%s\n", errno, strerror(errno));
+        fprintf(stderr, "gethostbyname failed. errmsg=%d:%s\n", errno,
+                strerror(errno));
         return -1;
     }
 
     int sockfd;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        fprintf(stderr, "create socket error. errmsg=%d:%s\n", errno, strerror(errno));
+        fprintf(stderr, "create socket error. errmsg=%d:%s\n", errno,
+                strerror(errno));
         return -1;
     }
 
@@ -60,8 +66,10 @@ int init_tcp_sock(const char *server_host, int server_port) {
     serv_addr.sin_addr = *((struct in_addr *)host->h_addr);
     bzero(&(serv_addr.sin_zero), 8);
 
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(struct sockaddr)) == -1) {
-        fprintf(stderr, "Failed to connect. errmsg=%d:%s\n", errno, strerror(errno));
+    if (connect(sockfd, (struct sockaddr *)&serv_addr,
+                sizeof(struct sockaddr)) == -1) {
+        fprintf(stderr, "Failed to connect. errmsg=%d:%s\n", errno,
+                strerror(errno));
         close(sockfd);
         return -1;
     }
@@ -71,7 +79,8 @@ int init_tcp_sock(const char *server_host, int server_port) {
 int main(int argc, char *argv[]) {
     int ret = 0;  // set_terminal_noncanonical();
                   //    if (ret < 0) {
-                  //        printf("Warning: failed to set terminal non canonical. Long command may be "
+                  //        printf("Warning: failed to set terminal non
+                  //        canonical. Long command may be "
                   //               "handled incorrect\n");
                   //    }
 
@@ -129,9 +138,13 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
-            if ((send_bytes = write(sockfd, command.c_str(), command.length() + 1)) == -1) {
-                // fprintf(stderr, "send error: %d:%s \n", errno, strerror(errno));
-                std::cerr << "send error: " << errno << ":" << strerror(errno) << " \n" << std::endl;
+            if ((send_bytes = write(sockfd, command.c_str(),
+                                    command.length() + 1)) == -1) {
+                // fprintf(stderr, "send error: %d:%s \n", errno,
+                // strerror(errno));
+                std::cerr << "send error: " << errno << ":" << strerror(errno)
+                          << " \n"
+                          << std::endl;
                 exit(1);
             }
             int len = recv(sockfd, recv_buf, MAX_MEM_BUFFER_SIZE, 0);

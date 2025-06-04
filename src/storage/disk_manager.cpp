@@ -230,7 +230,6 @@ void DiskManager::close_file(int fd) {
     fd2path_.erase(fd);
 }
 
-
 /**
  * @description: 获得文件的大小
  * @return {int} 文件的大小

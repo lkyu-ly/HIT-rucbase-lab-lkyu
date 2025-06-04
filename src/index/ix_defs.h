@@ -34,8 +34,9 @@ class IxFileHdr {
     int btree_order_;  // # children per page 每个结点最多可插入的键值对数量
     int keys_size_;    // keys_size = (btree_order + 1) * col_tot_len
     // first_leaf初始化之后没有进行修改，只不过是在测试文件中遍历叶子结点的时候用了
-    page_id_t first_leaf_;  // 首叶节点对应的页号，在上层IxManager的open函数进行初始化，初始化为root
-                            // page_no
+    page_id_t
+        first_leaf_;  // 首叶节点对应的页号，在上层IxManager的open函数进行初始化，初始化为root
+                      // page_no
     page_id_t last_leaf_;  // 尾叶节点对应的页号
     int tot_len_;          // 记录结构体的整体长度
 
