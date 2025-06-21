@@ -40,15 +40,33 @@ class ProjectionExecutor : public AbstractExecutor {
         len_ = curr_offset;
     }
 
-    void beginTuple() override {}
+    void beginTuple() override { prev_->beginTuple(); }
 
-    void nextTuple() override {}
+    void nextTuple() override { prev_->nextTuple(); }
 
-    std::unique_ptr<RmRecord> Next() override { return nullptr; }
+    // 核心
+    std::unique_ptr<RmRecord> Next() override {
+        std::unique_ptr<RmRecord> prev_rec = prev_->Next();  // 获取输入元组
+        if (prev_rec == nullptr) {
+            return nullptr;
+        }
+
+        std::unique_ptr<RmRecord> proj_rec =
+            std::make_unique<RmRecord>(len_);  // 创建空输出元组
+            
+        // 复制投影列数据
+        for (size_t i = 0; i < sel_idxs_.size(); i++) {
+            const ColMeta &prev_col = prev_->cols()[sel_idxs_[i]];
+            const ColMeta &proj_col = cols_[i];
+            memcpy(proj_rec->data + proj_col.offset,
+                   prev_rec->data + prev_col.offset, prev_col.len);
+        }
+        return proj_rec;
+    }
 
     Rid &rid() override { return _abstract_rid; }
 
-    bool is_end() const override { return true; }
+    bool is_end() const override { return prev_->is_end(); }  // return true;
 
     std::string getType() override { return "ProjectionExecutor"; }
 
