@@ -18,8 +18,7 @@
 - [x] Lab1-缓冲池管理器实现
 - [x] Lab2-记录管理器实现
 - [x] Lab3-数据定义的实现
-- [ ] Lab4
-- [ ] Lab5
+- [x] Lab4-数据操纵的实现
 
 ## 本人实验环境：
 
@@ -59,10 +58,20 @@
 
 ### 学生实验指导书
 
-> 请使用命令 git pull 来拉取最新的实验文档
+> 哈工大实验文档位置：
 
 - [Lab0-磁盘管理器实现](docs/hit-db-class/lab0.pdf)
 - [Lab1-缓冲池管理器实现](docs/hit-db-class/lab1.pdf)
 - [Lab2-记录管理器实现](docs/hit-db-class/lab2.pdf)
 - [Lab3-数据定义的实现](docs/hit-db-class/lab3.pdf)
 - [Lab4-数据操纵的实现](docs/hit-db-class/lab4.pdf)
+
+## 怎么写实验报告？
+
+我们的实验报告使用 markdown 格式，建议你自建一个 git 仓库存放作业，每写一个实验提交一次，这样，对于每一个 commit：
+
+```bash
+git diff <commit-hash>^ <path_to_file_or_dir> > labx.diff
+```
+
+git diff 会生成一个 diff 文件，保存了你为了这次实验对指定文件/目录下的文件做了什么更改，然后这个文件的内容该给谁看，你大概也就清楚了。

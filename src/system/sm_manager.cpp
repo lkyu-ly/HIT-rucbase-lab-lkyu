@@ -160,7 +160,7 @@ void SmManager::close_db() {
     fhs_.clear();
     ihs_.clear();
 
-    if (chdir("..") < 0) {
+    if (chdir("..") < 0) {  // 返回上一级目录
         throw UnixError();
     }
 }
